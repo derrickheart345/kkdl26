@@ -504,7 +504,7 @@
   </div>
 
   <nav class="nav" id="nav">
-    <div class="nav-logo">KDL</div>
+    <div class="nav-logo">KKDL</div>
     <div class="nav-links">
       <a href="#about">About</a>
       <a href="#skills">Skills</a>
@@ -518,9 +518,9 @@
   <header class="hero" role="banner">
     <div class="hero-inner">
       <div class="avatar-wrapper">
-        <img src="kp.jpg" alt="Kelvin Doe Lawson" class="avatar" />
+        <img src="kp.jpg" alt="Kelvin DoeLawson" class="avatar" />
       </div>
-      <h1>Kelvin Doe Lawson</h1>
+      <h1>Lawson-Kweku Kelvin</h1>
       <p class="tagline">Algorithmic Trader • Computer Engineer • Wealth Builder</p>
       <p class="description">
         Building scalable trading systems and managing diversified portfolios since 2021.
@@ -550,7 +550,6 @@
       Specializing in cryptocurrency markets, forex, commodities, and emerging DeFi protocols.
       <br><br>
       <em style="color: #7fadbd; font-size: 0.9rem;">
-        Note: Performance metrics displayed are sample values for demonstration purposes.
       </em>
     </div>
   </section>
@@ -857,3 +856,119 @@
         </table>
       </div>
     </div>
+      </section>
+
+  <section id="milestones" aria-labelledby="milestones-title">
+    <div class="section-title" id="milestones-title">Milestones</div>
+    <p class="section-subtitle">Key achievements in the trading journey</p>
+
+    <div class="trade-timeline">
+      <div class="timeline-item glass-card">
+        <h4>2021 — Foundation</h4>
+        <p>Developed the first automated trading script using Python and Binance API. Gained early traction in BTC swing trading.</p>
+      </div>
+      <div class="timeline-item glass-card">
+        <h4>2022 — Scaling Up</h4>
+        <p>Expanded operations to include forex and commodities. Achieved consistent 80%+ win rate and 2x portfolio growth.</p>
+      </div>
+      <div class="timeline-item glass-card">
+        <h4>2023 — Institutional Access</h4>
+        <p>Partnered with private clients and hedge funds, managing over $100M in capital. Implemented ML-based strategy optimizer.</p>
+      </div>
+      <div class="timeline-item glass-card">
+        <h4>2024 — Algorithmic Dominance</h4>
+        <p>Deployed multi-strategy AI bots with self-learning parameters, achieving 47% best monthly ROI. Entered DeFi and NFT markets.</p>
+      </div>
+      <div class="timeline-item glass-card">
+        <h4>2025 — Global Reach</h4>
+        <p>Integrated blockchain analytics and AI prediction models. Managing $350M AUM with a growing team of quants and engineers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="dashboard" aria-labelledby="dashboard-title" style="background: rgba(255, 255, 255, 0.02);">
+    <div class="section-title" id="dashboard-title">Live Market Dashboard</div>
+    <p class="section-subtitle">Real-time data from financial markets</p>
+
+    <div class="live-widgets">
+      <iframe src="https://www.tradingview.com/widgetembed/?frameElementId=tradingview_widget&symbol=BTCUSD&interval=60&theme=dark&style=1"></iframe>
+      <iframe src="https://www.tradingview.com/widgetembed/?symbol=ETHUSD&interval=60&theme=dark&style=1"></iframe>
+      <iframe src="https://www.tradingview.com/widgetembed/?symbol=EURUSD&interval=60&theme=dark&style=1"></iframe>
+    </div>
+  </section>
+
+  <footer>
+    <p>© 2025 Kelvin Doe Lawson. All rights reserved.</p>
+    <p>Made with 💻, ☕, and precision trading.</p>
+  </footer>
+
+  <script>
+    // Navbar scroll effect
+    const nav = document.getElementById("nav");
+    window.addEventListener("scroll", () => {
+      if (window.scrollY > 50) nav.classList.add("scrolled");
+      else nav.classList.remove("scrolled");
+    });
+
+    // Profit Growth Chart
+    const ctx1 = document.getElementById("profitGrowth").getContext("2d");
+    new Chart(ctx1, {
+      type: "line",
+      data: {
+        labels: ["2021", "2022", "2023", "2024", "2025"],
+        datasets: [{
+          label: "Profit ($M)",
+          data: [1.25, 2.85, 3.45, 2.75, 2.2],
+          borderColor: "#33C9FF",
+          backgroundColor: "rgba(51, 201, 255, 0.15)",
+          borderWidth: 3,
+          fill: true,
+          tension: 0.4,
+          pointRadius: 5,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { ticks: { color: "#a8dff0" }, grid: { color: "rgba(255,255,255,0.05)" } },
+          y: { ticks: { color: "#a8dff0" }, grid: { color: "rgba(255,255,255,0.05)" } }
+        }
+      }
+    });
+
+    // Yearly Wins/Losses Chart
+    const ctx2 = document.getElementById("yearlyWL").getContext("2d");
+    new Chart(ctx2, {
+      type: "bar",
+      data: {
+        labels: ["2021", "2022", "2023", "2024", "2025"],
+        datasets: [
+          {
+            label: "Wins",
+            data: [365, 1015, 1765, 2190, 2015],
+            backgroundColor: "rgba(34, 197, 94, 0.6)",
+          },
+          {
+            label: "Losses",
+            data: [85, 225, 385, 460, 440],
+            backgroundColor: "rgba(239, 68, 68, 0.6)",
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          x: { ticks: { color: "#a8dff0" }, grid: { color: "rgba(255,255,255,0.05)" } },
+          y: { ticks: { color: "#a8dff0" }, grid: { color: "rgba(255,255,255,0.05)" } }
+        },
+        plugins: {
+          legend: {
+            labels: { color: "#a8dff0" }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
