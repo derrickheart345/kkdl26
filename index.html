@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Kelvin Doe Lawson - Trading Portfolio</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    html,body { height: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      color: #e8f4f8;
+      background: #0a0e27;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background: 
+        radial-gradient(circle at 20% 50%, rgba(51, 201, 255, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(138, 43, 226, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 40% 90%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+      animation: gradientShift 15s ease infinite;
+      z-index: 0;
+    }
+
+    @keyframes gradientShift {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.8; transform: scale(1.1); }
+    }
+
+    .particles {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: rgba(51, 201, 255, 0.4);
+      border-radius: 50%;
+      animation: float 20s infinite;
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0) translateX(0); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
+    }
+
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 40px;
+      z-index: 100;
+      background: rgba(10, 14, 39, 0.7);
+      backdrop-filter: blur(12px) saturate(180%);
+      border-bottom: 1px solid rgba(51, 201, 255, 0.1);
+      transition: all 0.3s ease;
+    }
+    .nav.scrolled {
+      padding: 12px 40px;
+      background: rgba(10, 14, 39, 0.95);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    }
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #33C9FF, #8A2BE2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      align-items: center;
+    }
+    .nav a {
+      color: #bfefff;
+      text-decoration: none;
+      font-weight: 600;
+      font-size: 0.95rem;
+      position: relative;
+      transition: color 0.3s ease;
+    }
+    .nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #33C9FF, #8A2BE2);
+      transition: width 0.3s ease;
+    }
+    .nav a:hover {
+      color: #33C9FF;
+    }
+    .nav a:hover::after {
+      width: 100%;
+    }
+
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 80px 20px 40px;
+      z-index: 2;
+    }
+    .hero-inner {
+      max-width: 1000px;
+      width: 100%;
+      animation: fadeInUp 1s ease;
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .avatar-wrapper {
+      position: relative;
+      width: 160px;
+      height: 160px;
+      margin: 0 auto 24px;
+      animation: float-avatar 6s ease-in-out infinite;
+    }
+    @keyframes float-avatar {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+    .avatar-wrapper::before {
+      content: "";
+      position: absolute;
+      inset: -8px;
+      background: linear-gradient(135deg, #33C9FF, #8A2BE2, #FF0080);
+      border-radius: 50%;
+      animation: rotate 4s linear infinite;
+      z-index: -1;
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .hero .avatar {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      border: 4px solid #0a0e27;
+      object-fit: cover;
+      display: block;
+      box-shadow: 0 20px 60px rgba(51, 201, 255, 0.3);
+    }
+    
+    .hero h1 {
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -1px;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff, #33C9FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero .tagline {
+      color: #a8dff0;
+      margin-bottom: 12px;
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      font-weight: 600;
+    }
+    .hero .description {
+      color: #7fadbd;
+      margin-bottom: 32px;
+      font-size: 1rem;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+      line-height: 1.6;
+    }
+
+    .btns {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #33C9FF, #8A2BE2);
+      color: #fff;
+      border: none;
+      box-shadow: 0 8px 24px rgba(51, 201, 255, 0.4);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(51, 201, 255, 0.6);
+    }
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid #33C9FF;
+      color: #33C9FF;
+    }
+    .btn-secondary:hover {
+      background: #33C9FF;
+      color: #0a0e27;
+      transform: translateY(-2px);
+    }
+
+    section {
+      padding: 100px 40px;
+      position: relative;
+      z-index: 2;
+    }
+    .section-title {
+      text-align: center;
+      font-size: clamp(2rem, 4vw, 2.5rem);
+      font-weight: 800;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #fff, #33C9FF);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .section-subtitle {
+      text-align: center;
+      color: #7fadbd;
+      margin-bottom: 48px;
+      font-size: 1.1rem;
+    }
+
+    .glass-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 24px;
+      transition: all 0.3s ease;
+    }
+    .glass-card:hover {
+      transform: translateY(-4px);
+      border-color: rgba(51, 201, 255, 0.3);
+      box-shadow: 0 20px 60px rgba(51, 201, 255, 0.2);
+    }
+
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .metric-card {
+      text-align: center;
+      padding: 32px 24px;
+    }
+    .metric-card h3 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #7fadbd;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+    .metric-card p {
+      font-size: 2.5rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, #33C9FF, #8A2BE2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .metric-icon {
+      font-size: 2rem;
+      margin-bottom: 12px;
+    }
+
+    .chart-wrap {
+      max-width: 1200px;
+      margin: 48px auto 0;
+      padding: 32px;
+      border-radius: 24px;
+    }
+
+    .table-container {
+      max-width: 1200px;
+      margin: 48px auto;
+      overflow-x: auto;
+      border-radius: 20px;
+    }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.95rem;
+    }
+    .history-table th,
+    .history-table td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .history-table th {
+      background: rgba(51, 201, 255, 0.1);
+      color: #33C9FF;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.85rem;
+    }
+    .history-table tr {
+      transition: background 0.2s ease;
+    }
+    .history-table tbody tr:hover {
+      background: rgba(51, 201, 255, 0.05);
+    }
+    .positive {
+      color: #22c55e;
+      font-weight: 700;
+    }
+    .negative {
+      color: #ef4444;
+      font-weight: 700;
+    }
+
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .skill-card {
+      padding: 32px 28px;
+    }
+    .skill-card h3 {
+      color: #33C9FF;
+      font-size: 1.3rem;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .skill-card ul {
+      list-style: none;
+      color: #a8dff0;
+      line-height: 2;
+    }
+    .skill-card li::before {
+      content: "▹";
+      color: #33C9FF;
+      font-weight: bold;
+      margin-right: 12px;
+    }
+
+    .trade-timeline {
+      max-width: 1000px;
+      margin: 48px auto;
+      position: relative;
+    }
+    .timeline-item {
+      padding: 24px;
+      margin-bottom: 24px;
+      border-left: 3px solid #33C9FF;
+      position: relative;
+    }
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: -8px;
+      top: 30px;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #33C9FF;
+      box-shadow: 0 0 20px rgba(51, 201, 255, 0.6);
+    }
+    .timeline-item h4 {
+      color: #33C9FF;
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+    .timeline-item p {
+      color: #a8dff0;
+      line-height: 1.6;
+    }
+
+    .stats-banner {
+      background: linear-gradient(135deg, rgba(51, 201, 255, 0.1), rgba(138, 43, 226, 0.1));
+      padding: 60px 40px;
+      margin: 60px 0;
+      border-radius: 30px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 32px;
+      text-align: center;
+    }
+    .stat-item h4 {
+      color: #7fadbd;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+    .stat-item p {
+      font-size: 2rem;
+      font-weight: 900;
+      color: #33C9FF;
+    }
+
+    .live-widgets {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 24px;
+      margin-top: 48px;
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .live-widgets iframe {
+      width: 100%;
+      height: 400px;
+      border: none;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    footer {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      padding: 40px 20px;
+      color: #7fadbd;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    @media (max-width: 768px) {
+      .nav {
+        padding: 12px 20px;
+      }
+      .nav-links {
+        gap: 16px;
+      }
+      .nav a {
+        font-size: 0.85rem;
+      }
+      section {
+        padding: 60px 20px;
+      }
+      .metrics-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="particles" aria-hidden="true">
+    <div class="particle" style="left: 10%; animation-delay: 0s;"></div>
+    <div class="particle" style="left: 20%; animation-delay: 2s;"></div>
+    <div class="particle" style="left: 30%; animation-delay: 4s;"></div>
+    <div class="particle" style="left: 40%; animation-delay: 6s;"></div>
+    <div class="particle" style="left: 50%; animation-delay: 8s;"></div>
+    <div class="particle" style="left: 60%; animation-delay: 10s;"></div>
+    <div class="particle" style="left: 70%; animation-delay: 12s;"></div>
+    <div class="particle" style="left: 80%; animation-delay: 14s;"></div>
+    <div class="particle" style="left: 90%; animation-delay: 16s;"></div>
+  </div>
+
+  <nav class="nav" id="nav">
+    <div class="nav-logo">KDL</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#skills">Skills</a>
+      <a href="#performance">Performance</a>
+      <a href="#history">History</a>
+      <a href="#milestones">Milestones</a>
+      <a href="#dashboard">Dashboard</a>
+    </div>
+  </nav>
+
+  <header class="hero" role="banner">
+    <div class="hero-inner">
+      <div class="avatar-wrapper">
+        <img src="kp.jpg" alt="Kelvin Doe Lawson" class="avatar" />
+      </div>
+      <h1>Kelvin Doe Lawson</h1>
+      <p class="tagline">Algorithmic Trader • Computer Engineer • Wealth Builder</p>
+      <p class="description">
+        Building scalable trading systems and managing diversified portfolios since 2021.
+        Combining software engineering excellence with market expertise.
+      </p>
+      <div class="btns">
+        <a class="btn btn-primary" href="#performance">View Performance</a>
+        <a class="btn btn-secondary" href="https://twitter.com/kkdl26" target="_blank" rel="noopener">@kkdl26</a>
+        <a class="btn btn-secondary" href="https://wa.me/233556777679" target="_blank" rel="noopener">WhatsApp</a>
+      </div>
+    </div>
+  </header>
+
+  <section id="about" aria-labelledby="about-title">
+    <div class="section-title" id="about-title">About</div>
+    <p class="section-subtitle">
+      Blending technical precision with market intuition to deliver consistent results
+    </p>
+    <div style="max-width: 900px; margin: 0 auto; color: #a8dff0; line-height: 1.8; font-size: 1.05rem;">
+      Kelvin Doe Lawson leverages advanced software engineering skills and deep market knowledge to develop 
+      sophisticated trading algorithms and execute high-probability discretionary trades. With a systematic 
+      approach to risk management and portfolio optimization, the focus remains on sustainable growth and 
+      long-term wealth creation.
+      <br><br>
+      <strong style="color: #33C9FF;">Current Achievement:</strong> Managing a personal portfolio of <strong>$18 Million</strong> 
+      with <strong>$350 Million</strong> in assets under management across institutional and private clients. 
+      Specializing in cryptocurrency markets, forex, commodities, and emerging DeFi protocols.
+      <br><br>
+      <em style="color: #7fadbd; font-size: 0.9rem;">
+        Note: Performance metrics displayed are sample values for demonstration purposes.
+      </em>
+    </div>
+  </section>
+
+  <section id="skills" aria-labelledby="skills-title" style="background: rgba(255, 255, 255, 0.02);">
+    <div class="section-title" id="skills-title">Computer Engineering & Technical Skills</div>
+    <p class="section-subtitle">Full-stack development meets quantitative finance</p>
+
+    <div class="skills-grid">
+      <div class="glass-card skill-card">
+        <h3>⚙️ Core Engineering</h3>
+        <ul>
+          <li>Python (NumPy, Pandas, Scikit-learn)</li>
+          <li>C++ for HFT systems</li>
+          <li>JavaScript/TypeScript</li>
+          <li>Rust for blockchain development</li>
+          <li>Go for microservices</li>
+        </ul>
+      </div>
+
+      <div class="glass-card skill-card">
+        <h3>🤖 Machine Learning & AI</h3>
+        <ul>
+          <li>TensorFlow & PyTorch</li>
+          <li>LSTM & Transformer models</li>
+          <li>Reinforcement Learning</li>
+          <li>Sentiment analysis NLP</li>
+          <li>Computer vision for chart patterns</li>
+        </ul>
+      </div>
+
+      <div class="glass-card skill-card">
+        <h3>📊 Trading Systems</h3>
+        <ul>
+          <li>Algorithmic strategy development</li>
+          <li>Backtesting frameworks</li>
+          <li>Market microstructure analysis</li>
+          <li>Order execution optimization</li>
+          <li>Risk management systems</li>
+        </ul>
+      </div>
+
+      <div class="glass-card skill-card">
+        <h3>🔗 Blockchain & Web3</h3>
+        <ul>
+          <li>Smart contract development (Solidity)</li>
+          <li>DeFi protocol integration</li>
+          <li>MEV bot development</li>
+          <li>Cross-chain arbitrage</li>
+          <li>NFT trading automation</li>
+        </ul>
+      </div>
+
+      <div class="glass-card skill-card">
+        <h3>☁️ Infrastructure</h3>
+        <ul>
+          <li>AWS/GCP cloud architecture</li>
+          <li>Docker & Kubernetes</li>
+          <li>Real-time data pipelines</li>
+          <li>Database optimization (SQL/NoSQL)</li>
+          <li>API development & integration</li>
+        </ul>
+      </div>
+
+      <div class="glass-card skill-card">
+        <h3>📈 Quantitative Analysis</h3>
+        <ul>
+          <li>Statistical arbitrage</li>
+          <li>Time series forecasting</li>
+          <li>Monte Carlo simulations</li>
+          <li>Portfolio optimization (Markowitz)</li>
+          <li>Options pricing models</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="performance" aria-labelledby="performance-title">
+    <div class="section-title" id="performance-title">Performance Overview</div>
+    <p class="section-subtitle">Key metrics demonstrating trading excellence</p>
+
+    <div class="metrics-grid">
+      <div class="glass-card metric-card">
+        <div class="metric-icon">💼</div>
+        <h3>Portfolio Balance</h3>
+        <p>$18M</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">🏦</div>
+        <h3>Assets Under Management</h3>
+        <p>$350M</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">📈</div>
+        <h3>Win Rate</h3>
+        <p>82%</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">💰</div>
+        <h3>Average ROI</h3>
+        <p>+37%</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">🎯</div>
+        <h3>Total Trades</h3>
+        <p>8,945</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">⚡</div>
+        <h3>Sharpe Ratio</h3>
+        <p>2.4</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">📊</div>
+        <h3>Total P/L</h3>
+        <p>$12.5M</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">🔥</div>
+        <h3>Largest Win</h3>
+        <p>$850K</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">⚠️</div>
+        <h3>Largest Loss</h3>
+        <p>-$125K</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">🎲</div>
+        <h3>Max Drawdown</h3>
+        <p>9.2%</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">💎</div>
+        <h3>Avg Win</h3>
+        <p>$15,400</p>
+      </div>
+      <div class="glass-card metric-card">
+        <div class="metric-icon">📉</div>
+        <h3>Avg Loss</h3>
+        <p>-$4,200</p>
+      </div>
+    </div>
+
+    <div class="chart-wrap glass-card">
+      <canvas id="profitGrowth" height="120" aria-label="Profit growth over time"></canvas>
+    </div>
+
+    <div class="stats-banner glass-card">
+      <div class="stats-row">
+        <div class="stat-item">
+          <h4>Monthly Avg Return</h4>
+          <p>+12.3%</p>
+        </div>
+        <div class="stat-item">
+          <h4>Best Month</h4>
+          <p>+47.8%</p>
+        </div>
+        <div class="stat-item">
+          <h4>Worst Month</h4>
+          <p>-8.2%</p>
+        </div>
+        <div class="stat-item">
+          <h4>Consecutive Wins</h4>
+          <p>23</p>
+        </div>
+        <div class="stat-item">
+          <h4>Profit Factor</h4>
+          <p>3.67</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="history" aria-labelledby="history-title" style="background: rgba(255, 255, 255, 0.02);">
+    <div class="section-title" id="history-title">Trade History</div>
+    <p class="section-subtitle">Yearly breakdown of trading performance</p>
+
+    <div class="chart-wrap glass-card">
+      <canvas id="yearlyWL" height="120" aria-label="Yearly wins and losses"></canvas>
+    </div>
+
+    <div class="table-container glass-card">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Year</th>
+            <th>Trades</th>
+            <th>Wins</th>
+            <th>Losses</th>
+            <th>Win %</th>
+            <th>Net P/L</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>2021</td>
+            <td>450</td>
+            <td>365</td>
+            <td>85</td>
+            <td>81.1%</td>
+            <td class="positive">$1,250,000</td>
+          </tr>
+          <tr>
+            <td>2022</td>
+            <td>1,240</td>
+            <td>1,015</td>
+            <td>225</td>
+            <td>81.9%</td>
+            <td class="positive">$2,850,000</td>
+          </tr>
+          <tr>
+            <td>2023</td>
+            <td>2,150</td>
+            <td>1,765</td>
+            <td>385</td>
+            <td>82.1%</td>
+            <td class="positive">$3,450,000</td>
+          </tr>
+          <tr>
+            <td>2024</td>
+            <td>2,650</td>
+            <td>2,190</td>
+            <td>460</td>
+            <td>82.6%</td>
+            <td class="positive">$2,750,000</td>
+          </tr>
+          <tr>
+            <td>2025</td>
+            <td>2,455</td>
+            <td>2,015</td>
+            <td>440</td>
+            <td>82.1%</td>
+            <td class="positive">$2,200,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+          <div style="max-width: 1200px; margin: 48px auto;">
+      <h3 style="color: #33C9FF; font-size: 1.8rem; margin-bottom: 32px; text-align: center;">Notable Monthly Performances</h3>
+      <div class="table-container glass-card">
+        <table class="history-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Trades</th>
+              <th>Win Rate</th>
+              <th>Net P/L</th>
+              <th>Notable Strategy</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Jan 2023</td>
+              <td>185</td>
+              <td>86.5%</td>
+              <td class="positive">$425,000</td>
+              <td>BTC breakout trading</td>
+            </tr>
+            <tr>
+              <td>May 2023</td>
+              <td>220</td>
+              <td>84.1%</td>
+              <td class="positive">$380,000</td>
+              <td>Alt-coin momentum</td>
+            </tr>
+            <tr>
+              <td>Nov 2023</td>
+              <td>195</td>
+              <td>88.2%</td>
+              <td class="positive">$510,000</td>
+              <td>DeFi arbitrage</td>
+            </tr>
+            <tr>
+              <td>Mar 2024</td>
+              <td>240</td>
+              <td>85.4%</td>
+              <td class="positive">$670,000</td>
+              <td>ETH ETF anticipation</td>
+            </tr>
+            <tr>
+              <td>Jun 2024</td>
+              <td>165</td>
+              <td>76.4%</td>
+              <td class="negative">-$85,000</td>
+              <td>Market correction period</td>
+            </tr>
+            <tr>
+              <td>Aug 2024</td>
+              <td>285</td>
+              <td>87.7%</td>
+              <td class="positive">$720,000</td>
+              <td>Volatility expansion</td>
+            </tr>
+            <tr>
+              <td>Jan 2025</td>
+              <td>310</td>
+              <td>89.0%</td>
+              <td class="positive">$850,000</td>
+              <td>AI token surge</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
